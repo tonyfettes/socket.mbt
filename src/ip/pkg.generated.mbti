@@ -1,0 +1,31 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "tonyfettes/socket/ip"
+
+// Values
+
+// Errors
+
+// Types and methods
+pub(all) enum Protocol {
+  HOPOPT
+  ICMP
+  IGMP
+  GGP
+  IPV4
+  ST
+  TCP
+  CBT
+  EGP
+  IGP
+  PUP
+  UDP
+  IDP
+  RDP
+  IPV6
+}
+fn Protocol::to_int(Self) -> Int
+
+// Type aliases
+
+// Traits
+

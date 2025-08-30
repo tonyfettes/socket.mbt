@@ -1,0 +1,33 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "tonyfettes/socket"
+
+import(
+  "tonyfettes/socket/ip"
+)
+
+// Values
+
+// Errors
+
+// Types and methods
+type Address
+
+type AddressStorage
+
+type IPv4Address
+
+type IPv6Address
+
+pub(all) enum Protocol {
+  Local
+  IPv4(@ip.Protocol)
+  IPv6(@ip.Protocol)
+}
+
+type Socket
+fn Socket::stream(Protocol) -> Self
+
+// Type aliases
+
+// Traits
+
