@@ -43,6 +43,13 @@ moonbit_tonyfettes_socket_inet6_sockaddr_make(
 }
 
 MOONBIT_FFI_EXPORT
+int32_t
+moonbit_tonyfettes_socket_inet6_is_sockaddr(moonbit_bytes_t sockaddr) {
+  struct sockaddr *sa = (struct sockaddr *)sockaddr;
+  return sa->sa_family == AF_INET6;
+}
+
+MOONBIT_FFI_EXPORT
 moonbit_tonyfettes_socket_inet6_addr_t
 moonbit_tonyfettes_socket_inet6_sockaddr_addr(moonbit_bytes_t sockaddr) {
   struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)sockaddr;

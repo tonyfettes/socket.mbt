@@ -6,9 +6,12 @@ package "tonyfettes/socket"
 // Errors
 
 // Types and methods
-type Sockaddr
+pub(all) struct Sockaddr(Bytes)
+fn Sockaddr::family(Self) -> UInt16
+fn Sockaddr::inner(Self) -> Bytes
 
-type Socket
+pub(all) struct Socket(UInt64)
+fn Socket::inner(Self) -> UInt64
 
 pub(all) enum Type {
   STREAM
@@ -22,7 +25,7 @@ pub(all) enum Type {
 
 // Traits
 pub(open) trait ToSockaddr {
-  bytes(Self) -> Bytes
-  to_sockaddr(Self) -> Sockaddr = _
+  to_sockaddr(Self) -> Sockaddr
+  of_sockaddr(Sockaddr) -> Self?
 }
 

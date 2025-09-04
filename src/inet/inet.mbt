@@ -11,13 +11,28 @@ struct Sockaddr(Bytes)
 extern "c" fn sockaddr_make(addr : UInt, port : UInt16) -> Bytes = "moonbit_tonyfettes_socket_inet_sockaddr_make"
 
 ///|
+#borrow(sa)
+extern "c" fn is_sockaddr(sa : Bytes) -> Bool = "moonbit_tonyfettes_socket_inet_is_sockaddr"
+
+///|
 pub fn Sockaddr::new(addr : Addr, port : Port) -> Sockaddr {
   Sockaddr(sockaddr_make(addr.0, port.0))
 }
 
 ///|
-pub impl @socket.ToSockaddr for Sockaddr with bytes(self : Sockaddr) -> Bytes {
-  self.0
+pub impl @socket.ToSockaddr for Sockaddr with to_sockaddr(self : Sockaddr) -> @socket.Sockaddr {
+  @socket.Sockaddr(self.0)
+}
+
+///|
+pub impl @socket.ToSockaddr for Sockaddr with of_sockaddr(
+  sockaddr : @socket.Sockaddr,
+) -> Sockaddr? {
+  if is_sockaddr(sockaddr.0) {
+    Some(Sockaddr(sockaddr.0))
+  } else {
+    None
+  }
 }
 
 ///|

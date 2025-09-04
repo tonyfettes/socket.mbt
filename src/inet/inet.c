@@ -1,4 +1,5 @@
 #include <moonbit.h>
+#include <stdint.h>
 #ifndef _WIN32
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -27,6 +28,13 @@ moonbit_tonyfettes_socket_inet_sockaddr_make(uint32_t addr, uint32_t port) {
   sin->sin_addr.s_addr = addr;
   sin->sin_port = port;
   return sockaddr;
+}
+
+MOONBIT_FFI_EXPORT
+int32_t
+moonbit_tonyfettes_socket_inet_is_sockaddr(moonbit_bytes_t sockaddr) {
+  struct sockaddr *sa = (struct sockaddr *)sockaddr;
+  return sa->sa_family == AF_INET;
 }
 
 MOONBIT_FFI_EXPORT

@@ -1,0 +1,22 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "tonyfettes/socket/unix"
+
+import(
+  "tonyfettes/socket"
+)
+
+// Values
+fn socket(@socket.Type) -> @socket.Socket
+
+// Errors
+
+// Types and methods
+type Sockaddr
+fn Sockaddr::new(Bytes) -> Self
+fn Sockaddr::path(Self) -> Bytes
+impl @socket.ToSockaddr for Sockaddr
+
+// Type aliases
+
+// Traits
+

@@ -1,15 +1,19 @@
 ///|
-struct Sockaddr(Bytes)
+pub(all) struct Sockaddr(Bytes)
 
 ///|
-pub(open) trait ToSockaddr {
-  bytes(Self) -> Bytes
-  to_sockaddr(self : Self) -> Sockaddr = _
+#borrow(sa)
+extern "c" fn sockaddr_family(sa : Sockaddr) -> UInt16 = "moonbit_tonyfettes_socket_sockaddr_family"
+
+///|
+pub fn Sockaddr::family(self : Sockaddr) -> UInt16 {
+  sockaddr_family(self)
 }
 
 ///|
-impl ToSockaddr with to_sockaddr(self : Self) -> Sockaddr {
-  Sockaddr(self.bytes())
+pub(open) trait ToSockaddr {
+  to_sockaddr(self : Self) -> Sockaddr
+  of_sockaddr(sockaddr : Sockaddr) -> Self?
 }
 
 ///|
@@ -22,4 +26,4 @@ pub(all) enum Type {
 }
 
 ///|
-struct Socket(UInt64)
+pub(all) struct Socket(UInt64)

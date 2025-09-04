@@ -20,8 +20,23 @@ pub fn Sockaddr::new(addr : Addr, port : Port) -> Sockaddr {
 }
 
 ///|
-pub impl @socket.ToSockaddr for Sockaddr with bytes(self : Sockaddr) -> Bytes {
-  self.0
+#borrow(sa)
+extern "c" fn is_sockaddr(sa : Bytes) -> Bool = "moonbit_tonyfettes_socket_inet6_is_sockaddr"
+
+///|
+pub impl @socket.ToSockaddr for Sockaddr with to_sockaddr(self : Sockaddr) -> @socket.Sockaddr {
+  @socket.Sockaddr(self.0)
+}
+
+///|
+pub impl @socket.ToSockaddr for Sockaddr with of_sockaddr(
+  sockaddr : @socket.Sockaddr,
+) -> Sockaddr? {
+  if is_sockaddr(sockaddr.0) {
+    Some(Sockaddr(sockaddr.0))
+  } else {
+    None
+  }
 }
 
 ///|
