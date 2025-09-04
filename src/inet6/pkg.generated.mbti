@@ -1,0 +1,30 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "tonyfettes/socket/inet6"
+
+import(
+  "tonyfettes/socket"
+  "tonyfettes/socket/ip"
+)
+
+// Values
+fn socket(@socket.Type, @ip.Protocol) -> @socket.Socket
+
+// Errors
+
+// Types and methods
+type Addr
+fn Addr::new(UInt16, UInt16, UInt16, UInt16, UInt16, UInt16, UInt16, UInt16) -> Self
+
+type Port
+fn Port::new(UInt16) -> Self
+
+type Sockaddr
+fn Sockaddr::addr(Self) -> Addr
+fn Sockaddr::new(Addr, Port) -> Self
+fn Sockaddr::port(Self) -> Port
+impl @socket.ToSockaddr for Sockaddr
+
+// Type aliases
+
+// Traits
+

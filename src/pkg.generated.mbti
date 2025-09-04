@@ -1,33 +1,28 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "tonyfettes/socket"
 
-import(
-  "tonyfettes/socket/ip"
-)
-
 // Values
 
 // Errors
 
 // Types and methods
-type Address
-
-type AddressStorage
-
-type IPv4Address
-
-type IPv6Address
-
-pub(all) enum Protocol {
-  Local
-  IPv4(@ip.Protocol)
-  IPv6(@ip.Protocol)
-}
+type Sockaddr
 
 type Socket
-fn Socket::stream(Protocol) -> Self
+
+pub(all) enum Type {
+  STREAM
+  DGRAM
+  RAW
+  RDM
+  SEQPACKET
+}
 
 // Type aliases
 
 // Traits
+pub(open) trait ToSockaddr {
+  bytes(Self) -> Bytes
+  to_sockaddr(Self) -> Sockaddr = _
+}
 
