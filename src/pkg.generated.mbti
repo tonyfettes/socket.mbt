@@ -2,12 +2,13 @@
 package "tonyfettes/socket"
 
 // Values
+fn socket(Int, Type, Int) -> Socket
 
 // Errors
 
 // Types and methods
 pub(all) struct Sockaddr(Bytes)
-fn Sockaddr::family(Self) -> UInt16
+fn Sockaddr::family(Self) -> Int
 fn Sockaddr::inner(Self) -> Bytes
 
 pub(all) struct Socket(UInt64)

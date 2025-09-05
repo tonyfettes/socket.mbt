@@ -1,1 +1,3 @@
-{}
+{
+  "native-stub": ["socket.c"]
+}

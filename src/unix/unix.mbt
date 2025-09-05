@@ -41,3 +41,9 @@ extern "c" fn sockaddr_path(sun : Sockaddr) -> Bytes = "moonbit_tonyfettes_socke
 pub fn Sockaddr::path(self : Sockaddr) -> Bytes {
   sockaddr_path(self)
 }
+
+///|
+extern "c" fn get_address_family() -> Int = "moonbit_tonyfettes_socket_unix_address_family"
+
+///|
+pub let address_family : Int = get_address_family()

@@ -1,5 +1,4 @@
 {
-  "import": [
-    "tonyfettes/socket"
-  ]
+  "import": ["tonyfettes/socket"],
+  "native-stub": ["unix.c"]
 }

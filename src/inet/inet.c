@@ -50,3 +50,9 @@ moonbit_tonyfettes_socket_inet_sockaddr_port(moonbit_bytes_t addr) {
   struct sockaddr_in *sin = (struct sockaddr_in *)addr;
   return sin->sin_port;
 }
+
+MOONBIT_FFI_EXPORT
+int32_t
+moonbit_tonyfettes_socket_inet_address_family(void) {
+  return AF_INET;
+}

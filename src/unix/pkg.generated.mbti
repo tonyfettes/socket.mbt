@@ -6,6 +6,8 @@ import(
 )
 
 // Values
+let address_family : Int
+
 fn socket(@socket.Type) -> @socket.Socket
 
 // Errors

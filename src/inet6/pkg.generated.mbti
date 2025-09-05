@@ -7,6 +7,8 @@ import(
 )
 
 // Values
+let address_family : Int
+
 fn socket(@socket.Type, @ip.Protocol) -> @socket.Socket
 
 // Errors

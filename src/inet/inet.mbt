@@ -36,7 +36,7 @@ pub impl @socket.ToSockaddr for Sockaddr with of_sockaddr(
 }
 
 ///|
-struct Addr(UInt)
+pub struct Addr(UInt)
 
 ///|
 pub fn Addr::new(b0 : Byte, b1 : Byte, b2 : Byte, b3 : Byte) -> Addr {
@@ -75,4 +75,26 @@ extern "c" fn port_make(port : UInt16) -> UInt16 = "moonbit_tonyfettes_socket_in
 ///|
 pub fn Port::new(port : UInt16) -> Port {
   Port(port_make(port))
+}
+
+///|
+extern "c" fn get_address_family() -> Int = "moonbit_tonyfettes_socket_inet_address_family"
+
+///|
+pub let address_family : Int = get_address_family()
+
+///|
+pub trait ToSockaddrIn {
+  to_sockaddr_in(self : Self) -> Sockaddr?
+}
+
+///|
+pub impl ToSockaddrIn for @socket.Sockaddr with to_sockaddr_in(
+  self : @socket.Sockaddr,
+) -> Sockaddr? {
+  if is_sockaddr(self.0) {
+    Some(Sockaddr(self.0))
+  } else {
+    None
+  }
 }

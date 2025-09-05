@@ -7,12 +7,15 @@ import(
 )
 
 // Values
+let address_family : Int
+
 fn socket(@socket.Type, @ip.Protocol) -> @socket.Socket
 
 // Errors
 
 // Types and methods
-type Addr
+pub struct Addr(UInt)
+fn Addr::inner(Self) -> UInt
 fn Addr::new(Byte, Byte, Byte, Byte) -> Self
 
 type Port

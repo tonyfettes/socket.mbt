@@ -63,3 +63,9 @@ moonbit_tonyfettes_socket_inet6_sockaddr_port(moonbit_bytes_t sockaddr) {
   struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)sockaddr;
   return sin6->sin6_port;
 }
+
+MOONBIT_FFI_EXPORT
+int32_t
+moonbit_tonyfettes_socket_inet6_address_family(void) {
+  return AF_INET6;
+}

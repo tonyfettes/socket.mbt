@@ -94,3 +94,9 @@ extern "c" fn port_make(port : UInt16) -> UInt16 = "moonbit_tonyfettes_socket_in
 pub fn Port::new(port : UInt16) -> Port {
   Port(port_make(port))
 }
+
+///|
+extern "c" fn get_address_family() -> Int = "moonbit_tonyfettes_socket_inet6_address_family"
+
+///|
+pub let address_family : Int = get_address_family()
