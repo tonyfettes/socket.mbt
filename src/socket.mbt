@@ -32,6 +32,29 @@ pub(all) enum Type {
 }
 
 ///|
+pub fn Type::to_int(self : Type) -> Int {
+  match self {
+    Type::STREAM => 1
+    Type::DGRAM => 2
+    Type::RAW => 3
+    Type::RDM => 4
+    Type::SEQPACKET => 5
+  }
+}
+
+///|
+pub fn Type::of_int(i : Int) -> Type? {
+  match i {
+    1 => Some(Type::STREAM)
+    2 => Some(Type::DGRAM)
+    3 => Some(Type::RAW)
+    4 => Some(Type::RDM)
+    5 => Some(Type::SEQPACKET)
+    _ => None
+  }
+}
+
+///|
 pub(all) struct Socket(UInt64)
 
 ///|

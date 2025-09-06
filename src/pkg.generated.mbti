@@ -24,6 +24,8 @@ pub(all) enum Type {
   RDM
   SEQPACKET
 }
+fn Type::of_int(Int) -> Self?
+fn Type::to_int(Self) -> Int
 
 // Type aliases
 
