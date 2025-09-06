@@ -30,4 +30,8 @@ impl @socket.ToSockaddr for Sockaddr
 // Type aliases
 
 // Traits
+pub trait ToSockaddrIn {
+  to_sockaddr_in(Self) -> Sockaddr?
+}
+impl ToSockaddrIn for @socket.Sockaddr
 

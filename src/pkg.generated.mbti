@@ -10,8 +10,11 @@ fn socket(Int, Type, Int) -> Socket
 pub(all) struct Sockaddr(Bytes)
 fn Sockaddr::family(Self) -> Int
 fn Sockaddr::inner(Self) -> Bytes
+fn Sockaddr::new() -> Self
+fn[T : ToSockaddr] Sockaddr::to(Self) -> T?
 
 pub(all) struct Socket(UInt64)
+fn[T : ToSockaddr] Socket::connect(Self, T) -> Bool
 fn Socket::inner(Self) -> UInt64
 
 pub(all) enum Type {

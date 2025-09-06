@@ -20,6 +20,12 @@ moonbit_tonyfettes_socket(int32_t domain, int32_t type, int32_t protocol) {
 }
 
 MOONBIT_FFI_EXPORT
+moonbit_bytes_t
+moonbit_tonyfettes_socket_sockaddr_storage_make(void) {
+  return moonbit_make_bytes(sizeof(struct sockaddr_storage), 0);
+}
+
+MOONBIT_FFI_EXPORT
 int32_t
 moonbit_tonyfettes_socket_connect(uint64_t socket, moonbit_bytes_t addr) {
   int32_t addrlen = Moonbit_array_length(addr);

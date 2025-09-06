@@ -5,6 +5,9 @@ pub extern "c" fn socket(domain : Int, type_ : Type, protocol : Int) -> Socket =
 pub(all) struct Sockaddr(Bytes)
 
 ///|
+pub extern "c" fn Sockaddr::new() -> Sockaddr = "moonbit_tonyfettes_socket_sockaddr_storage_make"
+
+///|
 #borrow(sa)
 extern "c" fn sockaddr_family(sa : Bytes) -> Int = "moonbit_tonyfettes_socket_sockaddr_family"
 
