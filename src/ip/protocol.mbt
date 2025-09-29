@@ -19,3 +19,25 @@ pub(all) enum Protocol {
 
 ///|
 pub fn Protocol::to_int(self : Protocol) -> Int = "%identity"
+
+///|
+pub fn Protocol::of_int(i : Int) -> Protocol? {
+  match i {
+    0 => Some(Protocol::HOPOPT)
+    1 => Some(Protocol::ICMP)
+    2 => Some(Protocol::IGMP)
+    3 => Some(Protocol::GGP)
+    4 => Some(Protocol::IPV4)
+    5 => Some(Protocol::ST)
+    6 => Some(Protocol::TCP)
+    7 => Some(Protocol::CBT)
+    8 => Some(Protocol::EGP)
+    9 => Some(Protocol::IGP)
+    12 => Some(Protocol::PUP)
+    17 => Some(Protocol::UDP)
+    22 => Some(Protocol::IDP)
+    27 => Some(Protocol::RDP)
+    41 => Some(Protocol::IPV6)
+    _ => None
+  }
+}

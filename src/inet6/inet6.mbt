@@ -30,10 +30,6 @@ pub fn sockaddr(addr : Addr, port : UInt16) -> Sockaddr {
 }
 
 ///|
-#borrow(sa)
-extern "c" fn is_sockaddr(sa : Bytes) -> Bool = "moonbit_tonyfettes_socket_inet6_is_sockaddr"
-
-///|
 pub impl @socket.ToSockaddr for Sockaddr with to_sockaddr(self : Sockaddr) -> @socket.Sockaddr {
   @socket.Sockaddr(self.0)
 }
@@ -42,7 +38,7 @@ pub impl @socket.ToSockaddr for Sockaddr with to_sockaddr(self : Sockaddr) -> @s
 pub impl @socket.ToSockaddr for Sockaddr with of_sockaddr(
   sockaddr : @socket.Sockaddr,
 ) -> Sockaddr? {
-  if is_sockaddr(sockaddr.0) {
+  if sockaddr.family() == family {
     Some(Sockaddr(sockaddr.0))
   } else {
     None
@@ -51,6 +47,18 @@ pub impl @socket.ToSockaddr for Sockaddr with of_sockaddr(
 
 ///|
 struct Addr(FixedArray[UInt16])
+
+///|
+extern "c" fn inet6_addr_make(
+  b0 : UInt16,
+  b1 : UInt16,
+  b2 : UInt16,
+  b3 : UInt16,
+  b4 : UInt16,
+  b5 : UInt16,
+  b6 : UInt16,
+  b7 : UInt16,
+) -> FixedArray[UInt16] = "moonbit_tonyfettes_socket_inet6_addr_make"
 
 ///|
 pub fn Addr::new(
@@ -63,7 +71,7 @@ pub fn Addr::new(
   b6 : UInt16,
   b7 : UInt16,
 ) -> Addr {
-  Addr([b0, b1, b2, b3, b4, b5, b6, b7])
+  Addr(inet6_addr_make(b0, b1, b2, b3, b4, b5, b6, b7))
 }
 
 ///|
@@ -77,62 +85,30 @@ pub fn addr(
   b6 : UInt16,
   b7 : UInt16,
 ) -> Addr {
-  Addr::new(b0, b1, b2, b3, b4, b5, b6, b7)
+  Addr(inet6_addr_make(b0, b1, b2, b3, b4, b5, b6, b7))
+}
+
+///|
+#borrow(addr)
+extern "c" fn inet6_ntop(addr : FixedArray[UInt16]) -> Bytes = "moonbit_tonyfettes_socket_inet6_ntop"
+
+///|
+pub fn ntop(addr : Addr) -> String {
+  let buf = inet6_ntop(addr.0)
+  let buf_len = buf.length()
+  let strlen = for i in 0..<buf_len {
+    if buf[i] == 0 {
+      break i
+    }
+  } else {
+    buf_len
+  }
+  @encoding/utf8.decode_lossy(buf[:strlen])
 }
 
 ///|
 pub impl Show for Addr with output(self : Addr, logger : &Logger) -> Unit {
-  let b = self.0
-  let mut longest = None
-  let mut current = None
-  for i in 0..<8 {
-    match current {
-      None => if b[i] == 0 { current = Some(i) }
-      Some(offset) =>
-        if b[i] != 0 {
-          current = None
-          let length = i - offset
-          match longest {
-            None => longest = Some((offset, length))
-            Some((_, l)) => if length > l { longest = Some((offset, length)) }
-          }
-        }
-    }
-  }
-  match current {
-    Some(offset) => {
-      let length = 8 - offset
-      match longest {
-        None => longest = Some((offset, length))
-        Some((_, l)) => if length > l { longest = Some((offset, length)) }
-      }
-    }
-    None => ()
-  }
-  match longest {
-    Some((offset, length)) if length > 1 => {
-      for i in 0..<offset {
-        if i > 0 {
-          logger.write_char(':')
-        }
-        logger.write_string(b[i].to_int().to_string(radix=16))
-      }
-      logger.write_string("::")
-      for i in (offset + length)..<8 {
-        if i > offset + length {
-          logger.write_char(':')
-        }
-        logger.write_string(b[i].to_int().to_string(radix=16))
-      }
-    }
-    Some(_) | None =>
-      for i in 0..<8 {
-        if i > 0 {
-          logger.write_char(':')
-        }
-        logger.write_string(b[i].to_int().to_string(radix=16))
-      }
-  }
+  logger.write_string(ntop(self))
 }
 
 ///|
@@ -172,3 +148,6 @@ extern "c" fn sockaddr_scope_id(sin : Sockaddr) -> UInt = "moonbit_tonyfettes_so
 pub fn Sockaddr::scope_id(self : Sockaddr) -> UInt {
   sockaddr_scope_id(self)
 }
+
+///|
+pub const AddrStrLen = 46

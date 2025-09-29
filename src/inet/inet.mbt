@@ -11,6 +11,11 @@ pub extern "c" fn socket(
 struct Sockaddr(Bytes)
 
 ///|
+pub impl Default for Sockaddr with default() -> Sockaddr {
+  sockaddr_make(0, 0)
+}
+
+///|
 pub impl ToJson for Sockaddr with to_json(self : Sockaddr) -> Json {
   { "addr": self.addr(), "port": self.port() }
 }
@@ -45,14 +50,29 @@ pub impl @socket.ToSockaddr for Sockaddr with of_sockaddr(
 }
 
 ///|
-struct Addr(UInt)
+pub struct Addr(UInt)
 
 ///|
-pub extern "c" fn Addr::new(b0 : Byte, b1 : Byte, b2 : Byte, b3 : Byte) -> UInt = "moonbit_tonyfettes_socket_inet_addr_make"
+pub impl Default for Addr with default() -> Addr {
+  Addr(0)
+}
+
+///|
+extern "c" fn inet_addr_make(
+  b0 : Byte,
+  b1 : Byte,
+  b2 : Byte,
+  b3 : Byte,
+) -> UInt = "moonbit_tonyfettes_socket_inet_addr_make"
+
+///|
+pub fn Addr::new(b0 : Byte, b1 : Byte, b2 : Byte, b3 : Byte) -> Addr {
+  Addr(inet_addr_make(b0, b1, b2, b3))
+}
 
 ///|
 pub fn addr(b0 : Byte, b1 : Byte, b2 : Byte, b3 : Byte) -> Addr {
-  Addr::new(b0, b1, b2, b3)
+  Addr(inet_addr_make(b0, b1, b2, b3))
 }
 
 ///|
@@ -61,14 +81,15 @@ extern "c" fn inet_ntop(addr : UInt) -> Bytes = "moonbit_tonyfettes_socket_inet_
 ///|
 pub fn ntop(addr : Addr) -> String {
   let buf = inet_ntop(addr.0)
-  let strlen = for i in 0..<buf.length() {
+  let buf_len = buf.length()
+  let strlen = for i in 0..<buf_len {
     if buf[i] == 0 {
       break i
     }
   } else {
-    buf.length()
+    buf_len
   }
-  @encoding/utf8.decode_lossy(inet_ntop(addr.0)[:strlen])
+  @encoding/utf8.decode_lossy(buf[:strlen])
 }
 
 ///|
@@ -118,3 +139,6 @@ extern "c" fn get_address_family() -> Int = "moonbit_tonyfettes_socket_inet_addr
 
 ///|
 pub let family : Int = get_address_family()
+
+///|
+pub const AddrStrLen = 16

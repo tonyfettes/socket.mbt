@@ -24,32 +24,32 @@ pub(open) trait ToSockaddr {
 
 ///|
 pub(all) enum Type {
-  STREAM = 1
-  DGRAM = 2
-  RAW = 3
+  Stream = 1
+  Datagram = 2
+  Raw = 3
   RDM = 4
-  SEQPACKET = 5
+  SeqPacket = 5
 }
 
 ///|
 pub fn Type::to_int(self : Type) -> Int {
   match self {
-    Type::STREAM => 1
-    Type::DGRAM => 2
-    Type::RAW => 3
+    Type::Stream => 1
+    Type::Datagram => 2
+    Type::Raw => 3
     Type::RDM => 4
-    Type::SEQPACKET => 5
+    Type::SeqPacket => 5
   }
 }
 
 ///|
 pub fn Type::of_int(i : Int) -> Type? {
   match i {
-    1 => Some(Type::STREAM)
-    2 => Some(Type::DGRAM)
-    3 => Some(Type::RAW)
+    1 => Some(Type::Stream)
+    2 => Some(Type::Datagram)
+    3 => Some(Type::Raw)
     4 => Some(Type::RDM)
-    5 => Some(Type::SEQPACKET)
+    5 => Some(Type::SeqPacket)
     _ => None
   }
 }
@@ -73,3 +73,13 @@ pub fn[T : ToSockaddr] Socket::connect(self : Socket, addr : T) -> Bool {
 
 ///|
 pub extern "c" fn get_last_error() -> Int = "moonbit_tonyfettes_socket_get_last_error"
+
+///|
+pub impl ToSockaddr for Sockaddr with to_sockaddr(self : Sockaddr) -> Sockaddr {
+  self
+}
+
+///|
+pub impl ToSockaddr for Sockaddr with of_sockaddr(sockaddr : Sockaddr) -> Sockaddr? {
+  Some(sockaddr)
+}

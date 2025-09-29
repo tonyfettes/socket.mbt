@@ -7,9 +7,15 @@ import(
 )
 
 // Values
+const AddrStrLen : Int = 16
+
 fn addr(Byte, Byte, Byte, Byte) -> Addr
 
 let family : Int
+
+fn ntop(Addr) -> String
+
+fn pton(String) -> Addr?
 
 fn sockaddr(Addr, UInt16) -> Sockaddr
 
@@ -18,8 +24,10 @@ fn socket(@socket.Type, @ip.Protocol) -> @socket.Socket
 // Errors
 
 // Types and methods
-type Addr
-fn Addr::new(Byte, Byte, Byte, Byte) -> Self
+pub struct Addr(UInt)
+#deprecated
+fn Addr::inner(Self) -> UInt
+fn Addr::new(Byte, Byte, Byte, Byte) -> UInt
 impl Show for Addr
 impl ToJson for Addr
 

@@ -2,6 +2,8 @@
 package "tonyfettes/socket"
 
 // Values
+fn get_last_error() -> Int
+
 fn socket(Int, Type, Int) -> Socket
 
 // Errors
