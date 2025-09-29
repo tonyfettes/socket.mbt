@@ -2,6 +2,7 @@
 #ifndef _WIN32
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <errno.h>
 #else
 #include <winsock2.h>
 #endif
@@ -30,4 +31,14 @@ int32_t
 moonbit_tonyfettes_socket_connect(uint64_t socket, moonbit_bytes_t addr) {
   int32_t addrlen = Moonbit_array_length(addr);
   return connect((int)socket, (struct sockaddr *)addr, addrlen);
+}
+
+MOONBIT_FFI_EXPORT
+int32_t
+moonbit_tonyfettes_socket_get_last_error(void) {
+#ifdef _WIN32
+  return WSAGetLastError();
+#else
+  return errno;
+#endif
 }

@@ -70,3 +70,6 @@ extern "c" fn socket_connect(socket : UInt64, addr : Bytes) -> Int = "moonbit_to
 pub fn[T : ToSockaddr] Socket::connect(self : Socket, addr : T) -> Bool {
   socket_connect(self.0, addr.to_sockaddr().0) == 0
 }
+
+///|
+pub extern "c" fn get_last_error() -> Int = "moonbit_tonyfettes_socket_get_last_error"
