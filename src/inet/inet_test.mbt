@@ -19,3 +19,18 @@ test "ToSockaddr" {
     { "addr": "127.0.0.1", "port": 8080 },
   ])
 }
+
+///|
+test "pton" {
+  let result = @inet.pton("127.0.0.1")
+  @json.inspect(result, content=["127.0.0.1"])
+  let result = @inet.pton("256.0.0.1")
+  @json.inspect(result, content=null)
+}
+
+///|
+test "ntop" {
+  let addr = @inet.addr(127, 0, 0, 1)
+  let result = @inet.ntop(addr)
+  @json.inspect(result, content="127.0.0.1")
+}

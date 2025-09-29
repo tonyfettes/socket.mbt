@@ -16,8 +16,7 @@ pub impl ToJson for Sockaddr with to_json(self : Sockaddr) -> Json {
 }
 
 ///|
-#borrow(addr)
-extern "c" fn sockaddr_make(addr : Bytes, port : UInt16) -> Bytes = "moonbit_tonyfettes_socket_inet_sockaddr_make"
+extern "c" fn sockaddr_make(addr : UInt, port : UInt16) -> Bytes = "moonbit_tonyfettes_socket_inet_sockaddr_make"
 
 ///|
 pub fn Sockaddr::new(addr : Addr, port : UInt16) -> Sockaddr {
@@ -46,12 +45,10 @@ pub impl @socket.ToSockaddr for Sockaddr with of_sockaddr(
 }
 
 ///|
-struct Addr(Bytes)
+struct Addr(UInt)
 
 ///|
-pub fn Addr::new(b0 : Byte, b1 : Byte, b2 : Byte, b3 : Byte) -> Addr {
-  Addr([b0, b1, b2, b3])
-}
+pub extern "c" fn Addr::new(b0 : Byte, b1 : Byte, b2 : Byte, b3 : Byte) -> UInt = "moonbit_tonyfettes_socket_inet_addr_make"
 
 ///|
 pub fn addr(b0 : Byte, b1 : Byte, b2 : Byte, b3 : Byte) -> Addr {
@@ -59,18 +56,38 @@ pub fn addr(b0 : Byte, b1 : Byte, b2 : Byte, b3 : Byte) -> Addr {
 }
 
 ///|
+extern "c" fn inet_ntop(addr : UInt) -> Bytes = "moonbit_tonyfettes_socket_inet_ntop"
+
+///|
+pub fn ntop(addr : Addr) -> String {
+  let buf = inet_ntop(addr.0)
+  let strlen = for i in 0..<buf.length() {
+    if buf[i] == 0 {
+      break i
+    }
+  } else {
+    buf.length()
+  }
+  @encoding/utf8.decode_lossy(inet_ntop(addr.0)[:strlen])
+}
+
+///|
+#borrow(s)
+extern "c" fn inet_pton(s : Bytes) -> UInt64 = "moonbit_tonyfettes_socket_inet_pton"
+
+///|
+pub fn pton(s : String) -> Addr? {
+  let result = inet_pton(@encoding/utf8.encode(s))
+  let status = (result >> 32).to_int()
+  match status {
+    1 => Some(Addr(result.to_uint()))
+    _ => None
+  }
+}
+
+///|
 pub impl Show for Addr with output(self : Addr, logger : &Logger) -> Unit {
-  let b0 = self.0.unsafe_get(0).to_int()
-  let b1 = self.0.unsafe_get(1).to_int()
-  let b2 = self.0.unsafe_get(2).to_int()
-  let b3 = self.0.unsafe_get(3).to_int()
-  logger.write_object(b0)
-  logger.write_char('.')
-  logger.write_object(b1)
-  logger.write_char('.')
-  logger.write_object(b2)
-  logger.write_char('.')
-  logger.write_object(b3)
+  logger.write_string(ntop(self))
 }
 
 ///|
@@ -80,7 +97,7 @@ pub impl ToJson for Addr with to_json(self : Addr) -> Json {
 
 ///|
 #borrow(sin)
-extern "c" fn sockaddr_addr(sin : Sockaddr) -> Bytes = "moonbit_tonyfettes_socket_inet_sockaddr_addr"
+extern "c" fn sockaddr_addr(sin : Sockaddr) -> UInt = "moonbit_tonyfettes_socket_inet_sockaddr_addr"
 
 ///|
 pub fn Sockaddr::addr(self : Sockaddr) -> Addr {
