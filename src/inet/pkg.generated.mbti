@@ -3,6 +3,7 @@ package "tonyfettes/socket/inet"
 
 import(
   "tonyfettes/socket"
+  "tonyfettes/socket/ip"
 )
 
 // Values
@@ -12,7 +13,7 @@ let family : Int
 
 fn sockaddr(Addr, UInt16) -> Sockaddr
 
-fn socket(@socket.Type, Protocol) -> @socket.Socket
+fn socket(@socket.Type, @ip.Protocol) -> @socket.Socket
 
 // Errors
 
@@ -22,24 +23,6 @@ fn Addr::new(Byte, Byte, Byte, Byte) -> Self
 impl Show for Addr
 impl ToJson for Addr
 
-pub(all) enum Protocol {
-  HOPOPT
-  ICMP
-  IGMP
-  GGP
-  IPV4
-  ST
-  TCP
-  CBT
-  EGP
-  IGP
-  PUP
-  UDP
-  IDP
-  RDP
-  IPV6
-}
-
 type Sockaddr
 fn Sockaddr::addr(Self) -> Addr
 fn Sockaddr::new(Addr, UInt16) -> Self
@@ -48,6 +31,7 @@ impl ToJson for Sockaddr
 impl @socket.ToSockaddr for Sockaddr
 
 // Type aliases
+pub typealias @ip.Protocol as Protocol
 
 // Traits
 

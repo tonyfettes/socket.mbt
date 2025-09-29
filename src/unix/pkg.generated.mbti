@@ -6,7 +6,9 @@ import(
 )
 
 // Values
-let address_family : Int
+let family : Int
+
+fn sockaddr(Bytes) -> Sockaddr
 
 fn socket(@socket.Type) -> @socket.Socket
 

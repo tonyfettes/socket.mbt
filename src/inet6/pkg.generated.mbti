@@ -32,6 +32,7 @@ impl ToJson for Sockaddr
 impl @socket.ToSockaddr for Sockaddr
 
 // Type aliases
+pub typealias @ip.Protocol as Protocol
 
 // Traits
 

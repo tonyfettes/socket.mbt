@@ -18,6 +18,11 @@ pub fn Sockaddr::new(path : Bytes) -> Sockaddr {
 }
 
 ///|
+pub fn sockaddr(path : Bytes) -> Sockaddr {
+  Sockaddr::new(path)
+}
+
+///|
 pub impl @socket.ToSockaddr for Sockaddr with to_sockaddr(self : Sockaddr) -> @socket.Sockaddr {
   @socket.Sockaddr(self.0)
 }
@@ -46,4 +51,4 @@ pub fn Sockaddr::path(self : Sockaddr) -> Bytes {
 extern "c" fn get_address_family() -> Int = "moonbit_tonyfettes_socket_unix_address_family"
 
 ///|
-pub let address_family : Int = get_address_family()
+pub let family : Int = get_address_family()
