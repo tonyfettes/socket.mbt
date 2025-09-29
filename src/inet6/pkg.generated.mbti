@@ -7,7 +7,11 @@ import(
 )
 
 // Values
-let address_family : Int
+fn addr(UInt16, UInt16, UInt16, UInt16, UInt16, UInt16, UInt16, UInt16) -> Addr
+
+let family : Int
+
+fn sockaddr(Addr, UInt16) -> Sockaddr
 
 fn socket(@socket.Type, @ip.Protocol) -> @socket.Socket
 
@@ -16,14 +20,15 @@ fn socket(@socket.Type, @ip.Protocol) -> @socket.Socket
 // Types and methods
 type Addr
 fn Addr::new(UInt16, UInt16, UInt16, UInt16, UInt16, UInt16, UInt16, UInt16) -> Self
-
-type Port
-fn Port::new(UInt16) -> Self
+impl Show for Addr
+impl ToJson for Addr
 
 type Sockaddr
 fn Sockaddr::addr(Self) -> Addr
-fn Sockaddr::new(Addr, Port) -> Self
-fn Sockaddr::port(Self) -> Port
+fn Sockaddr::new(Addr, UInt16) -> Self
+fn Sockaddr::port(Self) -> UInt16
+fn Sockaddr::scope_id(Self) -> UInt
+impl ToJson for Sockaddr
 impl @socket.ToSockaddr for Sockaddr
 
 // Type aliases

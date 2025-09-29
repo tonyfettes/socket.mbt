@@ -1,6 +1,9 @@
 #include <moonbit.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <string.h>
 #ifndef _WIN32
+#include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #else
@@ -14,41 +17,33 @@ moonbit_tonyfettes_socket_inet_socket(int32_t type, int32_t protocol) {
 }
 
 MOONBIT_FFI_EXPORT
-uint32_t
-moonbit_tonyfettes_socket_inet_port_make(uint32_t port) {
-  return htons(port);
-}
-
-MOONBIT_FFI_EXPORT
 moonbit_bytes_t
-moonbit_tonyfettes_socket_inet_sockaddr_make(uint32_t addr, uint32_t port) {
+moonbit_tonyfettes_socket_inet_sockaddr_make(
+  moonbit_bytes_t addr,
+  uint32_t port
+) {
   moonbit_bytes_t sockaddr = moonbit_make_bytes(sizeof(struct sockaddr_in), 0);
   struct sockaddr_in *sin = (struct sockaddr_in *)sockaddr;
   sin->sin_family = AF_INET;
-  sin->sin_addr.s_addr = addr;
-  sin->sin_port = port;
+  memcpy(&sin->sin_addr, addr, sizeof(struct in_addr));
+  sin->sin_port = htons(port);
   return sockaddr;
 }
 
 MOONBIT_FFI_EXPORT
-int32_t
-moonbit_tonyfettes_socket_inet_is_sockaddr(moonbit_bytes_t sockaddr) {
-  struct sockaddr *sa = (struct sockaddr *)sockaddr;
-  return sa->sa_family == AF_INET;
-}
-
-MOONBIT_FFI_EXPORT
-uint32_t
+moonbit_bytes_t
 moonbit_tonyfettes_socket_inet_sockaddr_addr(moonbit_bytes_t addr) {
+  moonbit_bytes_t in_addr = moonbit_make_bytes(sizeof(struct in_addr), 0);
   struct sockaddr_in *sin = (struct sockaddr_in *)addr;
-  return sin->sin_addr.s_addr;
+  memcpy(in_addr, &sin->sin_addr, sizeof(struct in_addr));
+  return in_addr;
 }
 
 MOONBIT_FFI_EXPORT
 uint32_t
 moonbit_tonyfettes_socket_inet_sockaddr_port(moonbit_bytes_t addr) {
   struct sockaddr_in *sin = (struct sockaddr_in *)addr;
-  return sin->sin_port;
+  return ntohs(sin->sin_port);
 }
 
 MOONBIT_FFI_EXPORT

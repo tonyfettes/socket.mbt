@@ -1,4 +1,7 @@
 {
-  "import": ["tonyfettes/socket", "tonyfettes/socket/ip"],
+  "import": [
+    "tonyfettes/socket",
+    "tonyfettes/socket/ip"
+  ],
   "native-stub": ["inet.c"]
 }

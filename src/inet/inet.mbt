@@ -1,22 +1,32 @@
 ///|
+pub typealias @ip.Protocol
+
+///|
 pub extern "c" fn socket(
   type_ : @socket.Type,
-  protocol : @ip.Protocol,
+  protocol : Protocol,
 ) -> @socket.Socket = "moonbit_tonyfettes_socket_inet_socket"
 
 ///|
 struct Sockaddr(Bytes)
 
 ///|
-extern "c" fn sockaddr_make(addr : UInt, port : UInt16) -> Bytes = "moonbit_tonyfettes_socket_inet_sockaddr_make"
+pub impl ToJson for Sockaddr with to_json(self : Sockaddr) -> Json {
+  { "addr": self.addr(), "port": self.port() }
+}
 
 ///|
-#borrow(sa)
-extern "c" fn is_sockaddr(sa : Bytes) -> Bool = "moonbit_tonyfettes_socket_inet_is_sockaddr"
+#borrow(addr)
+extern "c" fn sockaddr_make(addr : Bytes, port : UInt16) -> Bytes = "moonbit_tonyfettes_socket_inet_sockaddr_make"
 
 ///|
-pub fn Sockaddr::new(addr : Addr, port : Port) -> Sockaddr {
-  Sockaddr(sockaddr_make(addr.0, port.0))
+pub fn Sockaddr::new(addr : Addr, port : UInt16) -> Sockaddr {
+  Sockaddr(sockaddr_make(addr.0, port))
+}
+
+///|
+pub fn sockaddr(addr : Addr, port : UInt16) -> Sockaddr {
+  Sockaddr::new(addr, port)
 }
 
 ///|
@@ -28,7 +38,7 @@ pub impl @socket.ToSockaddr for Sockaddr with to_sockaddr(self : Sockaddr) -> @s
 pub impl @socket.ToSockaddr for Sockaddr with of_sockaddr(
   sockaddr : @socket.Sockaddr,
 ) -> Sockaddr? {
-  if is_sockaddr(sockaddr.0) {
+  if sockaddr.family() == family {
     Some(Sockaddr(sockaddr.0))
   } else {
     None
@@ -36,65 +46,58 @@ pub impl @socket.ToSockaddr for Sockaddr with of_sockaddr(
 }
 
 ///|
-pub struct Addr(UInt)
+struct Addr(Bytes)
 
 ///|
 pub fn Addr::new(b0 : Byte, b1 : Byte, b2 : Byte, b3 : Byte) -> Addr {
-  Addr(
-    (b0.to_uint() << 24) |
-    (b1.to_uint() << 16) |
-    (b2.to_uint() << 8) |
-    (b3.to_uint() << 0),
-  )
+  Addr([b0, b1, b2, b3])
+}
+
+///|
+pub fn addr(b0 : Byte, b1 : Byte, b2 : Byte, b3 : Byte) -> Addr {
+  Addr::new(b0, b1, b2, b3)
+}
+
+///|
+pub impl Show for Addr with output(self : Addr, logger : &Logger) -> Unit {
+  let b0 = self.0.unsafe_get(0).to_int()
+  let b1 = self.0.unsafe_get(1).to_int()
+  let b2 = self.0.unsafe_get(2).to_int()
+  let b3 = self.0.unsafe_get(3).to_int()
+  logger.write_object(b0)
+  logger.write_char('.')
+  logger.write_object(b1)
+  logger.write_char('.')
+  logger.write_object(b2)
+  logger.write_char('.')
+  logger.write_object(b3)
+}
+
+///|
+pub impl ToJson for Addr with to_json(self : Addr) -> Json {
+  self.to_string().to_json()
 }
 
 ///|
 #borrow(sin)
-extern "c" fn sockaddr_addr(sin : Sockaddr) -> Addr = "moonbit_tonyfettes_socket_inet_sockaddr_addr"
+extern "c" fn sockaddr_addr(sin : Sockaddr) -> Bytes = "moonbit_tonyfettes_socket_inet_sockaddr_addr"
 
 ///|
 pub fn Sockaddr::addr(self : Sockaddr) -> Addr {
-  sockaddr_addr(self)
+  Addr(sockaddr_addr(self))
 }
-
-///|
-struct Port(UInt16)
 
 ///|
 #borrow(sin)
-extern "c" fn sockaddr_port(sin : Sockaddr) -> Port = "moonbit_tonyfettes_socket_inet_sockaddr_port"
+extern "c" fn sockaddr_port(sin : Sockaddr) -> UInt16 = "moonbit_tonyfettes_socket_inet_sockaddr_port"
 
 ///|
-pub fn Sockaddr::port(self : Sockaddr) -> Port {
+pub fn Sockaddr::port(self : Sockaddr) -> UInt16 {
   sockaddr_port(self)
-}
-
-///|
-extern "c" fn port_make(port : UInt16) -> UInt16 = "moonbit_tonyfettes_socket_inet_port_make"
-
-///|
-pub fn Port::new(port : UInt16) -> Port {
-  Port(port_make(port))
 }
 
 ///|
 extern "c" fn get_address_family() -> Int = "moonbit_tonyfettes_socket_inet_address_family"
 
 ///|
-pub let address_family : Int = get_address_family()
-
-///|
-pub trait ToSockaddrIn {
-  to_sockaddr_in(self : Self) -> Sockaddr?
-}
-
-///|
-pub impl ToSockaddrIn for @socket.Sockaddr with to_sockaddr_in(
-  self : @socket.Sockaddr,
-) -> Sockaddr? {
-  if is_sockaddr(self.0) {
-    Some(Sockaddr(self.0))
-  } else {
-    None
-  }
-}
+pub let family : Int = get_address_family()
